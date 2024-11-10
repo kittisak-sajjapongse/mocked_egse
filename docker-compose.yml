@@ -1,0 +1,41 @@
+networks:
+  egse_net:
+    driver: bridge
+
+services:
+  nats:
+    image: nats:2.10.22-linux
+    container_name: nats
+    hostname: nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    networks:
+      - egse_net
+    restart: always
+
+  tm_publisher:
+    image: python:3.12.7-slim
+    container_name: tm_publisher
+    hostname: tm_publisher
+    environment:
+      - NATS_HOSTNAME=nats
+    volumes:
+      - .:/app
+    entrypoint: ["/app/tm_publisher.sh"]
+    networks:
+      - egse_net
+    restart: always
+
+  tm_subscriber:
+    image: python:3.12.7-slim
+    container_name: tm_subscriber
+    hostname: tm_subscriber
+    environment:
+      - NATS_HOSTNAME=nats
+    volumes:
+      - .:/app
+    entrypoint: ["/app/tm_subscriber.sh"]
+    networks:
+      - egse_net
+    restart: always
