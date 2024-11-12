@@ -25,6 +25,8 @@ services:
     entrypoint: ["/app/tm_publisher.sh"]
     networks:
       - egse_net
+    depends_on:
+      - nats
     restart: always
 
   tm_subscriber:
@@ -38,4 +40,6 @@ services:
     entrypoint: ["/app/tm_subscriber.sh"]
     networks:
       - egse_net
+    depends_on:
+      - nats
     restart: always
